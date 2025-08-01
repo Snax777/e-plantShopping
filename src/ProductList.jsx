@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { addItem } from './CartSlice';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [addedToCart, setAddedToCart] = useState({});
 
     const plantsArray = [
         {
@@ -252,6 +254,16 @@ function ProductList({ onHomeClick }) {
         e.preventDefault();
         setShowCart(false);
     };
+
+    const handleAddToCart = (plant) => {
+        addItem(plant);
+
+        setAddedToCart((prevState) => ({
+            ...prevState,
+            [plant.name]: true,
+        }));
+    };
+
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -274,8 +286,19 @@ function ProductList({ onHomeClick }) {
             </div>
             {!showCart ? (
                 <div className="product-grid">
-
-
+                    {plantsArray.map((category, categoryIndex) => 
+                    <div key={categoryIndex}>
+                        <h2>{category.category}</h2>
+                        {category.plants.map((plant, index) => 
+                        <div key={index}>
+                            <p className='plant-name'>{plant.name}</p>
+                            <img className='plant-image' src={plant.image} alt={plant.name} width='150vw' height='150vh' />
+                            <p className='plant-description'>{plant.description}</p>
+                            <p className='plant-cost'>{plant.cost}</p>
+                            <button className='plant-data-submit' onClick={() => handleAddToCart(plant)}>Add to cart</button>
+                        </div>
+                    )}
+                    </div>)}
                 </div>
             ) : (
                 <CartItem onContinueShopping={handleContinueShopping} />
