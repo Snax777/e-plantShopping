@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import './ProductList.css'
 import CartItem from './CartItem';
 import { addItem } from './CartSlice';
+
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
+    const dispatch = useDispatch();
 
     const plantsArray = [
         {
@@ -220,7 +223,7 @@ function ProductList({ onHomeClick }) {
         padding: '15px',
         display: 'flex',
         justifyContent: 'space-between',
-        alignIems: 'center',
+        alignItems: 'center',
         fontSize: '20px',
     }
     const styleObjUl = {
@@ -256,12 +259,14 @@ function ProductList({ onHomeClick }) {
     };
 
     const handleAddToCart = (plant) => {
-        addItem(plant);
+        dispatch(addItem(plant));
 
         setAddedToCart((prevState) => ({
             ...prevState,
             [plant.name]: true,
         }));
+
+        alert(`${plant.name} is added to the cart`);
     };
 
     return (
@@ -295,7 +300,7 @@ function ProductList({ onHomeClick }) {
                             <img className='plant-image' src={plant.image} alt={plant.name} width='150vw' height='150vh' />
                             <p className='plant-description'>{plant.description}</p>
                             <p className='plant-cost'>{plant.cost}</p>
-                            <button className='plant-data-submit' onClick={() => handleAddToCart(plant)}>Add to cart</button>
+                            <button className='plant-data-submit' onClick={() => handleAddToCart(plant)} disabled={addedToCart[plant.name]}>Add to cart</button>
                         </div>
                     )}
                     </div>)}
