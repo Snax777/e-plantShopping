@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './ProductList.css'
 import CartItem from './CartItem';
 import { addItem } from './CartSlice';
@@ -9,6 +9,7 @@ function ProductList({ onHomeClick }) {
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
     const dispatch = useDispatch();
+    const cartItems = useSelector(state => state.cart.items);
 
     const plantsArray = [
         {
@@ -266,8 +267,12 @@ function ProductList({ onHomeClick }) {
             [plant.name]: true,
         }));
 
-        alert(`${plant.name} is added to the cart`);
+        alert(`The ${plant.name.toLowerCase()} is added to the cart`);
     };
+
+    const calculateTotalQuantity = () => {
+        return cartItems ? cartItems.reduce((total, cartItem) => {return total + cartItem.quantity}, 0) : 0;
+    }
 
     return (
         <div>
@@ -291,6 +296,9 @@ function ProductList({ onHomeClick }) {
             </div>
             {!showCart ? (
                 <div className="product-grid">
+                    <div>
+                        <h2 style={{fontSize: 'bold'}}>Total Number of Items: {calculateTotalQuantity()}</h2>
+                    </div>
                     {plantsArray.map((category, categoryIndex) => 
                     <div key={categoryIndex}>
                         <h2>{category.category}</h2>
